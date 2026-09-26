@@ -28,7 +28,7 @@ def kira_galas_jarak(x, y):
         jarak = np.sqrt(dx**2 + dy**2)
         
         # Pengiraan Galas (Bearing dalam darjah 0° - 360°)
-        sudut_rad = np.arctan2(dx, dy) # Perhatian: Ukur biasanya guna dx (Easting) dan dy (Northing)
+        sudut_rad = np.arctan2(dx, dy)
         sudut_deg = np.degrees(sudut_rad)
         if sudut_deg < 0:
             sudut_deg += 360
@@ -54,8 +54,8 @@ def main_dashboard():
     st.title("📐 Sistem Pemprosesan Data Ukur & Lot Tanah")
     st.markdown("Aplikasi web interaktif untuk memproses koordinat, mengira luas, dan memaparkan pelan lot ukur.")
 
-    # Bahagian Muat Naik Fail CSV atau Masukkan Data Manual
-    st.sidebar.header tetapan_sidebar = "Tetapan Data"
+    # Bahagian Sidebar
+    st.sidebar.header("Tetapan Data")
     
     # Pilihan sumber data
     pilihan_input = st.sidebar.radio("Pilih Kaedah Masukan Data:", ["Muat Naik CSV", "Contoh Data Automatik"])
@@ -63,7 +63,7 @@ def main_dashboard():
     df = None
     
     if pilihan_input == "Muat Naik CSV":
-        uploaded_file = st.sidebar.file_uploader("Muat naik fail CSV (Lajur: Stesen, Easting/X, Northing/Y)", type=["csv"])
+        uploaded_file = st.sidebar.file_uploader("Muat naik fail CSV (Lajur: Stesen, Easting, Northing)", type=["csv"])
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
     else:
@@ -114,16 +114,10 @@ def main_dashboard():
                 # Paparan Peta Folium
                 st.subheader("🗺️ Pelan Interaktif Peta Lot")
                 
-                # Pusat peta (Purata koordinat)
                 pusat_y = np.mean(y)
                 pusat_x = np.mean(x)
                 
-                # Nota: Folium menggunakan lat/long, untuk koordinat unjuran RSO/Cassini (MGRS/TMG) 
-                # kita paparkan lokasinya secara anggaran atau transformasi ringkas jika guna lat/long sebenar.
-                # Di sini kita guna nilai koordinat terus untuk plotting simulasi tapak.
                 m = folium.Map(location=[pusat_y, pusat_x], zoom_start=18)
-                
-                # Tambah poligon lot tanah
                 lat_lon_coords = [[yi, xi] for yi, xi in zip(y, x)]
                 
                 folium.Polygon(
@@ -141,7 +135,6 @@ def main_dashboard():
                     )
                 ).add_to(m)
 
-                # Tambah penanda (marker) untuk setiap stesen
                 for i in range(len(x)):
                     folium.CircleMarker(
                         location=[y[i], x[i]],
