@@ -1,4 +1,6 @@
 streamlit
-matplotlib
 pandas
 numpy
+folium
+streamlit-folium
+shapely
